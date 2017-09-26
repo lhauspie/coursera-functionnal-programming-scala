@@ -42,9 +42,18 @@ object Main {
   def countChange(money: Int, coins: List[Int]): Int = {
     if (money < 0 || coins.isEmpty)
       0
-    else if (money == 0 )
+    else if (money == 0)
       1
     else
       countChange(money, coins.tail) + countChange(money - coins.head, coins)
+  }
+
+
+  def sum(xs: List[Int]): Int = {
+    def loop(xs: List[Int], prevHead: Int): Int = {
+      if (xs.isEmpty) prevHead
+      else loop(xs.tail, xs.head + prevHead)
+    }
+    loop(xs, 0)
   }
 }
