@@ -1,8 +1,6 @@
 package funsets
 
 import org.scalatest.FunSuite
-
-
 import org.junit.runner.RunWith
 import org.scalatest.junit.JUnitRunner
 
@@ -77,6 +75,7 @@ class FunSetSuite extends FunSuite {
     val s1 = singletonSet(1)
     val s2 = singletonSet(2)
     val s3 = singletonSet(3)
+    val s4 = singletonSet(4)
   }
 
   /**
@@ -110,5 +109,64 @@ class FunSetSuite extends FunSuite {
     }
   }
 
+  test("diff contains only 4") {
+    new TestSets {
+      val s123 = union(union(s1, s2), s3)
+      val s124 = union(union(s1, s2), s4)
+      val s = diff(s123, s124);
+      assert(!contains(s, 1), "Diff 1")
+      assert(!contains(s, 2), "Diff 2")
+      assert(contains(s, 3), "Diff 3")
+      assert(!contains(s, 4), "Diff 4")
+    }
+  }
+
+  test("intersect contains only 1 and 2") {
+    new TestSets {
+      val s123 = union(union(s1, s2), s3)
+      val s124 = union(union(s1, s2), s4)
+      val s = intersect(s123, s124);
+      assert(contains(s, 1), "Intersect 1")
+      assert(contains(s, 2), "Intersect 2")
+      assert(!contains(s, 3), "Intersect 3")
+      assert(!contains(s, 4), "Intersect 4")
+    }
+  }
+
+  test("forall: {1,3,4,5,7,1000}") {
+    new TestSets {
+      val forall = union(union(union(union(union(union(singletonSet(1), singletonSet(2)), singletonSet(3)), singletonSet(4)), singletonSet(5)), singletonSet(7)), singletonSet(1000))
+      assert(!FunSets.forall(forall, ((x$1: Int) => x$1.<(5))), "all elements are not less than 5")
+    }
+  }
+
+  test("forall: {2,4,10,50,1000}") {
+    new TestSets {
+      val forall = union(union(union(union(union(singletonSet(2), singletonSet(4)), singletonSet(10)), singletonSet(20)), singletonSet(50)), singletonSet(1000))
+      assert(FunSets.forall(forall, ((x$2: Int) => x$2 % 2 == 0)), "all elements are even")
+    }
+  }
+
+
+  test("exists: {2,4,10,50,1000}") {
+    new TestSets {
+      val exists = union(union(union(union(union(singletonSet(2), singletonSet(4)), singletonSet(10)), singletonSet(20)), singletonSet(50)), singletonSet(1000))
+      assert(FunSets.exists(exists, ((x$3: Int) => x$3.==(2))), "2 should exist in the given set.")
+    }
+  }
+
+  test("bis exists: {2,4,10,50,1000}") {
+    new TestSets {
+      val exists = union(union(union(union(union(singletonSet(2), singletonSet(4)), singletonSet(10)), singletonSet(20)), singletonSet(50)), singletonSet(1000))
+      assert(!FunSets.exists(exists, ((x$4: Int) => x$4.==(5))), "5 shouldn't exist in the given set.")
+    }
+  }
+
+  test("map: {2,4,10,20,50,1000}") {
+    new TestSets {
+      val map = union(union(union(union(union(singletonSet(2), singletonSet(4)), singletonSet(10)), singletonSet(20)), singletonSet(50)), singletonSet(1000))
+      assertResult("{1,3,9,19,49,999}", "TEST")(FunSets.toString(FunSets.map(map, ((x$5: Int) => x$5 - 1))))
+    }
+  }
 
 }
