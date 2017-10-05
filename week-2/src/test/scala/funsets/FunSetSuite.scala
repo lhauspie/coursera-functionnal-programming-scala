@@ -109,7 +109,7 @@ class FunSetSuite extends FunSuite {
     }
   }
 
-  test("diff contains only 4") {
+  test("diff contains only 3") {
     new TestSets {
       val s123 = union(union(s1, s2), s3)
       val s124 = union(union(s1, s2), s4)
